@@ -1,5 +1,7 @@
 package com.jannesh.controller;
 
+import com.jannesh.dto.product.CreateProductRequestDTO;
+import com.jannesh.dto.product.CreateProductResponseDTO;
 import com.jannesh.entity.product.Product;
 import com.jannesh.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +17,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/create")
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public CreateProductResponseDTO createProduct(@RequestBody CreateProductRequestDTO requestDTO) {
+        return productService.createProduct(requestDTO);
     }
 }
