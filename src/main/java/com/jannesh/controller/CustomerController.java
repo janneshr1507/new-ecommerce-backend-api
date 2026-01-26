@@ -3,7 +3,6 @@ package com.jannesh.controller;
 import com.jannesh.dto.customer.CreateCustomerRequestDTO;
 import com.jannesh.dto.customer.CreateCustomerResponseDTO;
 import com.jannesh.service.CustomerService;
-import com.jannesh.entity.customer.Customer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
