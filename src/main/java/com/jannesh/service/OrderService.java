@@ -8,6 +8,7 @@ import com.jannesh.entity.order.OrderStatus;
 import com.jannesh.entity.orderitem.OrderItem;
 import com.jannesh.entity.orderitem.OrderItemStatus;
 import com.jannesh.entity.product.Product;
+import com.jannesh.entity.product.ProductStatus;
 import com.jannesh.repository.CustomerRepository;
 import com.jannesh.entity.order.Order;
 import com.jannesh.dto.order.CreateOrderRequestDTO;
@@ -74,14 +75,14 @@ public class OrderService {
             modelMapper.map(item, orderItem);
 
             /*Check Product Quantity Availability*/
-            if(product.getQuantity() >= item.getQuantity()) {
+            if(product.getQuantity() >= item.getQuantity() && product.getStatus() == ProductStatus.ACTIVE) {
                 product.setQuantity(product.getQuantity() - item.getQuantity());
                 productRepo.save(product);
                 orderItem.setStatus(OrderItemStatus.CONFIRMED);
                 totalConfirmedOrders++;
-            } else {
+            } else if(product.getQuantity() < item.getQuantity() && product.getStatus() == ProductStatus.ACTIVE) {
                 orderItem.setStatus(OrderItemStatus.OUT_OF_STOCK);
-            }
+            } else orderItem.setStatus(OrderItemStatus.DISCARDED);
 
             ItemResponse itemResponse = modelMapper.map(orderItemRepo.save(orderItem), ItemResponse.class);
             itemResponseList.add(itemResponse);
