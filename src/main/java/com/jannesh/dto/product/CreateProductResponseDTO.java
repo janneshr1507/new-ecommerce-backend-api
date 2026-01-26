@@ -1,5 +1,6 @@
 package com.jannesh.dto.product;
 
+import com.jannesh.entity.product.ProductStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +11,5 @@ public class CreateProductResponseDTO {
     private String name;
     private int quantity;
     private float price;
+    private ProductStatus status;
 }

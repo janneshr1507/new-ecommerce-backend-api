@@ -36,7 +36,7 @@ public class OrderService {
     @Transactional()
     public CreateOrderResponseDTO createOrder(CreateOrderRequestDTO requestDTO) {
 
-        /*Step 1: Check Customer Status*/
+        /*Step 1: Check Customer Existence*/
         Optional<Customer> optionalCustomer = customerRepo.findById(requestDTO.getCustomerId());
         if(optionalCustomer.isEmpty()) throw new EntityNotFoundException("Customer Not Found");
         Customer customer = optionalCustomer.get();
@@ -59,7 +59,7 @@ public class OrderService {
         for(ItemRequest item: itemRequestList) {
             OrderItem orderItem = new OrderItem();
 
-            /*Step 5: Check Product Status*/
+            /*Step 5: Check Product Existence*/
             Optional<Product> optionalProduct = productRepo.findById(item.getProductId());
             if(optionalProduct.isEmpty()) throw new EntityNotFoundException("Product Not Found");
 

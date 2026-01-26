@@ -1,11 +1,11 @@
 package com.jannesh.dto.vendor;
 
+import com.jannesh.entity.vendor.VendorStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
 public class CreateVendorResponseDTO {
-
     private Long vendorId;
     private String name;
     private String contact;
@@ -16,5 +16,5 @@ public class CreateVendorResponseDTO {
     private String state;
     private String country;
     private String pincode;
-    private String status;
+    private VendorStatus status;
 }

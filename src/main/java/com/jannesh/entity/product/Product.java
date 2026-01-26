@@ -17,7 +17,21 @@ public class Product {
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
     private float price;
+
+    @Column(nullable = false)
+    private ProductStatus status;
+
+    @PrePersist
+    private void onCreate() {
+        this.status = ProductStatus.ACTIVE;
+    }
 }
