@@ -7,10 +7,13 @@ import com.jannesh.entity.vendor.Vendor;
 import com.jannesh.repository.ProductRepository;
 import com.jannesh.repository.VendorRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,5 +35,15 @@ public class ProductService {
         product.setVendor(vendor);
 
         return modelMapper.map(productRepo.save(product), CreateProductResponseDTO.class);
+    }
+
+    @Transactional
+    public List<CreateProductResponseDTO> createProduct(List<CreateProductRequestDTO> requestDTOList) {
+        if(requestDTOList.isEmpty()) throw new RuntimeException("Product List is Empty");
+        List<CreateProductResponseDTO> response = new ArrayList<>();
+        for(CreateProductRequestDTO requestDTO: requestDTOList) {
+                response.add(createProduct(requestDTO));
+        }
+        return response;
     }
 }
