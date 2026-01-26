@@ -56,7 +56,10 @@ public class OrderService {
         CreateOrderResponseDTO response = new CreateOrderResponseDTO();
         List<ItemResponse> itemResponseList = new ArrayList<>();
 
+        int totalOrders = 0;
+        int totalConfirmedOrders = 0;
         for(ItemRequest item: itemRequestList) {
+            totalOrders++;
             OrderItem orderItem = new OrderItem();
 
             /*Step 5: Check Product Existence*/
@@ -67,8 +70,18 @@ public class OrderService {
             Product product = optionalProduct.get();
             orderItem.setProduct(product);
             orderItem.setOrder(savedOrder);
+            orderItem.setName(product.getName());
             modelMapper.map(item, orderItem);
-            orderItem.setStatus(OrderItemStatus.CONFIRMED);
+
+            /*Check Product Quantity Availability*/
+            if(product.getQuantity() >= item.getQuantity()) {
+                product.setQuantity(product.getQuantity() - item.getQuantity());
+                productRepo.save(product);
+                orderItem.setStatus(OrderItemStatus.CONFIRMED);
+                totalConfirmedOrders++;
+            } else {
+                orderItem.setStatus(OrderItemStatus.OUT_OF_STOCK);
+            }
 
             ItemResponse itemResponse = modelMapper.map(orderItemRepo.save(orderItem), ItemResponse.class);
             itemResponseList.add(itemResponse);
@@ -76,8 +89,11 @@ public class OrderService {
 
         response.setCustomerId(customer.getCustomerId());
 
-        /*Step 7: Confirming the Order*/
-        savedOrder.setStatus(OrderStatus.CONFIRMED);
+        /*Step 7: Confirming the Order based on confirmed orders count*/
+        if(totalOrders == totalConfirmedOrders) savedOrder.setStatus(OrderStatus.CONFIRMED);
+        else if(totalConfirmedOrders == 0) savedOrder.setStatus(OrderStatus.CANCELLED);
+        else savedOrder.setStatus(OrderStatus.PARTIAL_CONFIRMED);
+
         Order resavedOrder = orderRepo.save(savedOrder);
         response.setOrderId(resavedOrder.getOrderId());
 
