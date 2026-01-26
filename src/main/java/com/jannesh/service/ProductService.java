@@ -30,9 +30,21 @@ public class ProductService {
         if(optionalVendor.isEmpty()) throw new EntityNotFoundException("Vendor Not Found");
 
         Vendor vendor = optionalVendor.get();
-        Product product = modelMapper.map(requestDTO, Product.class);
-        product.setProductId(null);
-        product.setVendor(vendor);
+
+        /*Updating product already exists or else creating new*/
+        Product product = productRepo.findByName(requestDTO.getName())
+                .map(existingProduct -> {
+                    existingProduct.setQuantity(existingProduct.getQuantity() + requestDTO.getQuantity());
+                    return existingProduct;
+                })
+                .orElseGet(() -> {
+                    Product newProduct = new Product();
+                    newProduct.setVendor(vendor);
+                    newProduct.setName(requestDTO.getName());
+                    newProduct.setQuantity(requestDTO.getQuantity());
+                    newProduct.setPrice(requestDTO.getPrice());
+                    return newProduct;
+                });
 
         return modelMapper.map(productRepo.save(product), CreateProductResponseDTO.class);
     }
