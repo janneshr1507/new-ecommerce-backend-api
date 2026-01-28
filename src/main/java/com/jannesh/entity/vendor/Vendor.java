@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Entity
 @Getter @Setter
 public class Vendor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long vendorId;
 
     @Column(nullable = false)
@@ -43,6 +44,7 @@ public class Vendor {
 
     @PrePersist
     private void onCreate() {
+        this.vendorId = ThreadLocalRandom.current().nextLong(1_000_000_000L,10_000_000_000L);
         this.status = VendorStatus.ACTIVE;
     }
 }

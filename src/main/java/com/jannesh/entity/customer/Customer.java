@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.random.RandomGenerator;
+
 @Entity
 @Getter @Setter
 @ToString
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long customerId;
 
     @Column(nullable = false)
@@ -29,6 +31,7 @@ public class Customer {
 
     @PrePersist
     public void onCreate() {
+        this.customerId = ThreadLocalRandom.current().nextLong(1_000_000_000L,10_000_000_000L);
         this.status = CustomerStatus.ACTIVE;
     }
 }
