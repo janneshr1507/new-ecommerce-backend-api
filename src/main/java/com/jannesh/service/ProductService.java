@@ -1,7 +1,9 @@
 package com.jannesh.service;
 
+import com.jannesh.dto.order.ItemRequest;
 import com.jannesh.dto.product.CreateProductRequestDTO;
-import com.jannesh.dto.product.CreateProductResponseDTO;
+import com.jannesh.dto.product.ProductResponseDTO;
+import com.jannesh.dto.product.UpdateProductRequestDTO;
 import com.jannesh.entity.product.Product;
 import com.jannesh.entity.product.ProductStatus;
 import com.jannesh.entity.vendor.Vendor;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -24,7 +27,7 @@ public class ProductService {
     private final VendorRepository vendorRepo;
     private final ModelMapper modelMapper;
 
-    public CreateProductResponseDTO createProduct(CreateProductRequestDTO requestDTO) {
+    public ProductResponseDTO createProduct(CreateProductRequestDTO requestDTO) {
         if(requestDTO.getVendorId() == null) throw new RuntimeException("VendorId in the request cannot be null");
 
         Optional<Vendor> optionalVendor = vendorRepo.findById(requestDTO.getVendorId());
@@ -47,13 +50,13 @@ public class ProductService {
                     return newProduct;
                 });
 
-        return modelMapper.map(productRepo.save(product), CreateProductResponseDTO.class);
+        return modelMapper.map(productRepo.save(product), ProductResponseDTO.class);
     }
 
     @Transactional
-    public List<CreateProductResponseDTO> createProduct(List<CreateProductRequestDTO> requestDTOList) {
+    public List<ProductResponseDTO> createProduct(List<CreateProductRequestDTO> requestDTOList) {
         if(requestDTOList.isEmpty()) throw new RuntimeException("Product List is Empty");
-        List<CreateProductResponseDTO> response = new ArrayList<>();
+        List<ProductResponseDTO> response = new ArrayList<>();
         for(CreateProductRequestDTO requestDTO: requestDTOList) {
                 response.add(createProduct(requestDTO));
         }
@@ -61,13 +64,39 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProductQuantity() {
-        List<Product> productList = productRepo.findAll();
-        for(Product product: productList) {
-            if(product.getQuantity() == 0) {
+    public void updateProductQuantity(List<ItemRequest> itemRequestList) {
+
+        for(ItemRequest itemRequest: itemRequestList) {
+            Optional<Product> optionalProduct = productRepo.findById(itemRequest.getProductId());
+            if(optionalProduct.isEmpty()) throw new EntityNotFoundException("Product Not Found");
+
+            Product product = optionalProduct.get();
+
+            if(product.getQuantity() == 0){
                 product.setStatus(ProductStatus.INACTIVE);
                 productRepo.save(product);
             }
         }
+    }
+
+    @Transactional
+    public ProductResponseDTO updateProductDetails(UpdateProductRequestDTO requestDTO) {
+        Optional<Product> optionalProduct = productRepo.findById(requestDTO.getProductId());
+        if(optionalProduct.isEmpty()) throw new EntityNotFoundException("Product Not Found");
+        Product product = optionalProduct.get();
+
+        if(!Objects.equals(requestDTO.getName(), product.getName())) {
+            product.setName(requestDTO.getName());
+        }
+
+        if(!Objects.equals(requestDTO.getPrice(), product.getPrice())) {
+            product.setPrice(requestDTO.getPrice());
+        }
+        if(!Objects.equals(requestDTO.getQuantity(),product.getQuantity())) {
+            product.setQuantity(product.getQuantity());
+        }
+        if(requestDTO.getQuantity() > 0) product.setStatus(ProductStatus.ACTIVE);
+
+        return modelMapper.map(productRepo.save(product), ProductResponseDTO.class);
     }
 }

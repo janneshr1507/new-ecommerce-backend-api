@@ -3,10 +3,11 @@ package com.jannesh.dto.product;
 import com.jannesh.entity.product.ProductStatus;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter @Setter
-public class CreateProductResponseDTO {
-    private Long vendorId;
+@ToString
+public class UpdateProductRequestDTO {
     private Long productId;
     private String name;
     private int quantity;

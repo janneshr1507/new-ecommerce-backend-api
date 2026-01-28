@@ -21,7 +21,7 @@ public class OrderController {
     @PostMapping("/create")
     public CreateOrderResponseDTO createOrder(@RequestBody CreateOrderRequestDTO requestDTO) {
         CreateOrderResponseDTO response = orderService.createOrder(requestDTO);
-        productService.updateProductQuantity();
+        productService.updateProductQuantity(requestDTO.getItemRequestList());
         return response;
     }
 }
