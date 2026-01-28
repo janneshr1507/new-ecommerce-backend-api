@@ -82,9 +82,9 @@ public class OrderService {
                 productRepo.save(product);
                 orderItem.setStatus(OrderItemStatus.CONFIRMED);
                 totalConfirmedOrders++;
-            } else if(product.getStatus() == ProductStatus.INACTIVE) {
+            } else {
                 orderItem.setStatus(OrderItemStatus.OUT_OF_STOCK);
-            } else orderItem.setStatus(OrderItemStatus.DISCARDED);
+            }
 
             ItemResponse itemResponse = modelMapper.map(orderItemRepo.save(orderItem), ItemResponse.class);
             itemResponseList.add(itemResponse);

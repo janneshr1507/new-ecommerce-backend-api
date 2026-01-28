@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public class UpdateProductRequestDTO {
     private Long productId;
+    private Long vendorId;
     private String name;
     private int quantity;
     private float price;

@@ -85,6 +85,10 @@ public class ProductService {
         if(optionalProduct.isEmpty()) throw new EntityNotFoundException("Product Not Found");
         Product product = optionalProduct.get();
 
+        if(!Objects.equals(requestDTO.getVendorId(),product.getVendor().getVendorId())) {
+            throw new RuntimeException("Vendor Id Mismatch");
+        }
+
         if(!Objects.equals(requestDTO.getName(), product.getName())) {
             product.setName(requestDTO.getName());
         }
@@ -93,9 +97,11 @@ public class ProductService {
             product.setPrice(requestDTO.getPrice());
         }
         if(!Objects.equals(requestDTO.getQuantity(),product.getQuantity())) {
-            product.setQuantity(product.getQuantity());
+            product.setQuantity(requestDTO.getQuantity());
         }
+
         if(requestDTO.getQuantity() > 0) product.setStatus(ProductStatus.ACTIVE);
+        if(requestDTO.getQuantity() <= 0) product.setStatus(ProductStatus.INACTIVE);
 
         return modelMapper.map(productRepo.save(product), ProductResponseDTO.class);
     }
