@@ -22,7 +22,7 @@ public class CustomerService {
         return modelMapper.map(customerRepo.save(customer), CreateCustomerResponseDTO.class);
     }
 
-    public CreateCustomerResponseDTO fetchCutomerDetails(Long customerId) {
+    public CreateCustomerResponseDTO fetchCustomerDetails(Long customerId) {
         Optional<Customer> optionalCustomer = customerRepo.findById(customerId);
         if(optionalCustomer.isEmpty()) throw new EntityNotFoundException("Customer Not Found");
 

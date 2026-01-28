@@ -3,7 +3,6 @@ package com.jannesh.controller;
 import com.jannesh.dto.customer.CreateCustomerRequestDTO;
 import com.jannesh.dto.customer.CreateCustomerResponseDTO;
 import com.jannesh.service.CustomerService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +19,6 @@ public class CustomerController {
 
     @GetMapping("/fetch/{customerId}")
     public CreateCustomerResponseDTO fetchCustomerDetails(@PathVariable Long customerId) {
-        return customerService.fetchCutomerDetails(customerId);
+        return customerService.fetchCustomerDetails(customerId);
     }
 }

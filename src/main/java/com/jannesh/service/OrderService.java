@@ -1,24 +1,20 @@
 package com.jannesh.service;
 
-import com.jannesh.dto.order.CreateOrderResponseDTO;
-import com.jannesh.dto.order.ItemRequest;
-import com.jannesh.dto.order.ItemResponse;
+import com.jannesh.dto.order.*;
 import com.jannesh.entity.customer.Customer;
 import com.jannesh.entity.order.OrderStatus;
 import com.jannesh.entity.orderitem.OrderItem;
 import com.jannesh.entity.orderitem.OrderItemStatus;
 import com.jannesh.entity.product.Product;
 import com.jannesh.entity.product.ProductStatus;
-import com.jannesh.repository.CustomerRepository;
+import com.jannesh.entity.vendor.Vendor;
+import com.jannesh.repository.*;
 import com.jannesh.entity.order.Order;
-import com.jannesh.dto.order.CreateOrderRequestDTO;
-import com.jannesh.repository.OrderItemRepository;
-import com.jannesh.repository.OrderRepository;
-import com.jannesh.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +28,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepo;
     private final CustomerRepository customerRepo;
     private final ProductRepository productRepo;
+    private final VendorRepository vendorRepo;
     private final ModelMapper modelMapper;
 
     @Transactional()
@@ -63,12 +60,17 @@ public class OrderService {
             totalOrders++;
             OrderItem orderItem = new OrderItem();
 
-            /*Step 5: Check Product Existence*/
+            /*Step 5: Check Product Existence & Vendor Existence*/
             Optional<Product> optionalProduct = productRepo.findById(item.getProductId());
             if(optionalProduct.isEmpty()) throw new EntityNotFoundException("Product Not Found");
 
+            Optional<Vendor> optionalVendor = vendorRepo.findById(item.getVendorId());
+            if(optionalVendor.isEmpty()) throw new EntityNotFoundException("Vendor Not Found");
+            Vendor vendor = optionalVendor.get();
+
             /*Step 6: Confirming the OrderItem*/
             Product product = optionalProduct.get();
+            orderItem.setVendor(vendor);
             orderItem.setProduct(product);
             orderItem.setOrder(savedOrder);
             orderItem.setName(product.getName());
@@ -100,6 +102,27 @@ public class OrderService {
 
         response.setItemResponseList(itemResponseList);
 
+        return response;
+    }
+
+    public OrderItemListResponseDTO fetchOrderDetailsByVendorId(Long vendorId) {
+        Optional<Vendor> optionalVendor = vendorRepo.findById(vendorId);
+        if(optionalVendor.isEmpty()) throw new EntityNotFoundException("Vendor Not Found");
+        Vendor vendor = optionalVendor.get();
+
+        Sort sort = Sort.by("quantity").descending();
+        List<OrderItem> orderItemList = orderItemRepo.findByVendor_VendorId(vendor.getVendorId(), sort);
+
+        OrderItemListResponseDTO response = new OrderItemListResponseDTO();
+        response.setVendorId(vendorId);
+
+        List<ItemResponse> itemResponseList = new ArrayList<>();
+        for(OrderItem orderItem: orderItemList) {
+            ItemResponse itemResponse = modelMapper.map(orderItem, ItemResponse.class);
+            itemResponseList.add(itemResponse);
+        }
+
+        response.setItemResponseList(itemResponseList);
         return response;
     }
 }

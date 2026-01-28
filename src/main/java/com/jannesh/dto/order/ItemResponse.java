@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter @Setter
 public class ItemResponse {
     private Long orderItemId;
+    private Long vendorId;
     private Long productId;
     private String name;
     private int quantity;
