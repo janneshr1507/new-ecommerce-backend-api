@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.random.RandomGenerator;
 
 @Entity
 @Getter @Setter
@@ -19,10 +17,10 @@ public class Customer {
     @Column(nullable = false)
     public String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String contact;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String email;
 
     @Enumerated(EnumType.STRING)
