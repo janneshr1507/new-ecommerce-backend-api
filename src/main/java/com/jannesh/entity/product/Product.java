@@ -6,13 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
 @Getter @Setter
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,6 +30,7 @@ public class Product {
     private float price;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
     private LocalDateTime createdAt;
@@ -37,6 +38,7 @@ public class Product {
 
     @PrePersist
     private void onCreate() {
+        this.productId = ThreadLocalRandom.current().nextLong(1_000_000_000L,10_000_000_000L);
         this.status = ProductStatus.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

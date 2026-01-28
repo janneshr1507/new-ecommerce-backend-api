@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class CreateProductResponseDTO {
+public class ProductResponseDTO {
     private Long vendorId;
     private Long productId;
     private String name;

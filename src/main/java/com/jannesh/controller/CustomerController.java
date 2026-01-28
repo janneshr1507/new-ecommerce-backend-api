@@ -14,12 +14,12 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping("/create")
-    public CreateCustomerResponseDTO createCustomer(@RequestBody CreateCustomerRequestDTO requestDTO) {
+    public CreateCustomerResponseDTO createCustomer(@Valid @RequestBody CreateCustomerRequestDTO requestDTO) {
         return customerService.createCustomer(requestDTO);
     }
 
     @GetMapping("/fetch/{customerId}")
     public CreateCustomerResponseDTO fetchCustomerDetails(@PathVariable Long customerId) {
-        return customerService.fetchCutomerDetails(customerId);
+        return customerService.fetchCustomerDetails(customerId);
     }
 }

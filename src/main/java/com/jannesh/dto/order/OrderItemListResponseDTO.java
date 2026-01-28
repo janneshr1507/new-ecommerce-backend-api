@@ -4,12 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter @Setter
 @ToString
-public class ItemRequest {
+public class OrderItemListResponseDTO {
     private Long vendorId;
-    private Long productId;
-    private String name;
-    private int quantity;
-    private float price;
+    private List<ItemResponse> itemResponseList;
 }

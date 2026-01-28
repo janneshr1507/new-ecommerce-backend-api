@@ -1,15 +1,17 @@
-package com.jannesh.dto.order;
+package com.jannesh.dto.product;
 
+import com.jannesh.entity.product.ProductStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter
 @ToString
-public class ItemRequest {
-    private Long vendorId;
+public class UpdateProductRequestDTO {
     private Long productId;
+    private Long vendorId;
     private String name;
     private int quantity;
     private float price;
+    private ProductStatus status;
 }
