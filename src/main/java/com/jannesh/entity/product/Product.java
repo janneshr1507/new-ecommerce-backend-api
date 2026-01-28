@@ -38,6 +38,7 @@ public class Product {
 
     @PrePersist
     private void onCreate() {
+        this.productId = ThreadLocalRandom.current().nextLong(1_000_000_000L,10_000_000_000L);
         this.status = ProductStatus.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -45,7 +46,6 @@ public class Product {
 
     @PreUpdate
     private void onUpdate() {
-        this.productId = ThreadLocalRandom.current().nextLong(1_000_000_000L,10_000_000_000L);
         this.updatedAt = LocalDateTime.now();
     }
 }

@@ -82,7 +82,7 @@ public class OrderService {
                 productRepo.save(product);
                 orderItem.setStatus(OrderItemStatus.CONFIRMED);
                 totalConfirmedOrders++;
-            } else if(product.getQuantity() < item.getQuantity() && product.getStatus() == ProductStatus.ACTIVE) {
+            } else if(product.getStatus() == ProductStatus.INACTIVE) {
                 orderItem.setStatus(OrderItemStatus.OUT_OF_STOCK);
             } else orderItem.setStatus(OrderItemStatus.DISCARDED);
 

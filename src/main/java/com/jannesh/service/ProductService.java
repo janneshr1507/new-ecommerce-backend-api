@@ -3,6 +3,7 @@ package com.jannesh.service;
 import com.jannesh.dto.product.CreateProductRequestDTO;
 import com.jannesh.dto.product.CreateProductResponseDTO;
 import com.jannesh.entity.product.Product;
+import com.jannesh.entity.product.ProductStatus;
 import com.jannesh.entity.vendor.Vendor;
 import com.jannesh.repository.ProductRepository;
 import com.jannesh.repository.VendorRepository;
@@ -57,5 +58,16 @@ public class ProductService {
                 response.add(createProduct(requestDTO));
         }
         return response;
+    }
+
+    @Transactional
+    public void updateProductQuantity() {
+        List<Product> productList = productRepo.findAll();
+        for(Product product: productList) {
+            if(product.getQuantity() == 0) {
+                product.setStatus(ProductStatus.INACTIVE);
+                productRepo.save(product);
+            }
+        }
     }
 }
